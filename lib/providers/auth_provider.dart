@@ -4,36 +4,33 @@ import '../api/firebase_auth_api.dart';
 
 class AuthProvider with ChangeNotifier {
   late FirebaseAuthAPI authService;
-  User? userObj;
+  late Stream<User?> uStream;
 
   AuthProvider() {
     authService = FirebaseAuthAPI();
-
-    authService.getUser().listen((User? newUser) {
-      userObj = newUser;
-      print('AuthProvider - FirebaseAuth - onAuthStateChanged - $newUser');
-      notifyListeners();
-    }, onError: (e) {
-      // provide a more useful error
-      print('AuthProvider - FirebaseAuth - onAuthStateChanged - $e');
-    });
+    fetchAuthentication();
   }
 
-  User? get user => userObj;
+  Stream<User?> get userStream => uStream;
 
-  bool get isAuthenticated {
-    return user != null;
-  }
-
-  void signIn(String email, String password) {
-    authService.signIn(email, password);
-  }
-
-  void signOut() {
-    authService.signOut();
+  void fetchAuthentication() {
+    uStream = authService.getUser();
+    notifyListeners();
   }
 
   Future<void> signUp(String email, String password) async {
     await authService.signUp(email, password);
+    notifyListeners();
+  }
+
+  Future<void> signIn(String email, String password) async {
+    await authService.signIn(email, password);
+    notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    await authService.signOut();
+    notifyListeners();
   }
 }
+

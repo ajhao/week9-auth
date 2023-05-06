@@ -36,10 +36,11 @@ class _LoginPageState extends State<LoginPage> {
       key: const Key('loginButton'),
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
-        onPressed: () {
-          context
-              .read<AuthProvider>()
-              .signIn(emailController.text, passwordController.text);
+        onPressed: () async {
+          await context.read<AuthProvider>().signIn(
+                emailController.text.trim(),
+                passwordController.text.trim(),
+              );
         },
         child: const Text('Log In', style: TextStyle(color: Colors.white)),
       ),

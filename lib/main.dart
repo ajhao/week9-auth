@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/todo_provider.dart';
@@ -7,6 +6,7 @@ import '../screens/todo_page.dart';
 import '../screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,10 +47,21 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (context.watch<AuthProvider>().isAuthenticated) {
-      return const TodoPage();
-    } else {
-      return const LoginPage();
-    }
+    Stream<User?> uStream = context.watch<AuthProvider>().userStream;
+
+    return StreamBuilder(
+      stream: uStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasData) {
+          return const TodoPage();
+        } else if (snapshot.hasError) {
+          return const Text('Error encountered!');
+        } else {
+          return const LoginPage();
+        }
+      },
+    );
   }
 }

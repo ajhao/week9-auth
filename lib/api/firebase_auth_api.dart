@@ -7,11 +7,15 @@ class FirebaseAuthAPI {
     return auth.authStateChanges();
   }
 
-  void signIn(String email, String password) async {
+  Future<void> signIn(String email, String password) async {
     UserCredential credential;
     try {
       final credential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      //let's print the object returned by signInWithEmailAndPassword
+      //you can use this object to get the user's id, email, etc.
+      print(credential);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         //possible to return something more useful
@@ -30,6 +34,10 @@ class FirebaseAuthAPI {
         email: email,
         password: password,
       );
+
+      //let's print the object returned by signInWithEmailAndPassword
+      //you can use this object to get the user's id, email, etc.\
+      print(credential);
     } on FirebaseAuthException catch (e) {
       //possible to return something more useful
       //than just print an error message to improve UI/UX
@@ -43,7 +51,7 @@ class FirebaseAuthAPI {
     }
   }
 
-  void signOut() async {
+  Future<void> signOut() async {
     auth.signOut();
   }
 }

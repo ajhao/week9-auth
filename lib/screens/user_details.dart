@@ -13,7 +13,9 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Details"),
+      ),
       body: Center(
         child: ListView(
           shrinkWrap: true,
